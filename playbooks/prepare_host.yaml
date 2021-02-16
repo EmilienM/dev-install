@@ -15,7 +15,7 @@
       disable_gpg_check: True
 
   - name: Configure rhos release "{{ rhos_release }}"
-    shell: rhos-release "{{ rhos_release }}"
+    shell: rhos-release "{{ rhos_release }}" -p RHOS_TRUNK-17.0-RHEL-8-20210304.n.0
 
   - name: Upgrade all packages
     yum:
@@ -25,6 +25,11 @@
 
   - name: Reboot if we updated packages
     reboot:
+    when: yum.changed
+
+  - name: Reconnect VPN 
+    pause:
+      prompt: "Please reconnect VPN"
     when: yum.changed
 
   - name: Set FQDN

@@ -70,7 +70,8 @@
       mode: '0644'
     vars:
       cidr: "{{ hostonly_cidr }}"
-      exit_ip: "{{ network_info.public_ipv4.address }}"
+      exit_if: br-ex
+      exit_ip: "{{ public_api }}"
 
   - name: Activate systemd units
     systemd:

@@ -3,6 +3,14 @@
 # Generate a keypair for Octavia Amphora (needed by TripleO)
 ssh-keygen -b 2048 -t rsa -f {{ stack_home }}/octavia -q -N ""
 
+cat <<EOF > {{ stack_home }}/nfs.yaml
+parameter_defaults:
+  CinderEnableIscsiBackend: False
+  CinderEnableNfsBackend: True
+  CinderNfsMountOptions: context=system_u:object_r:container_file_t:s0
+  CinderNfsServers: 192.168.3.104:/mnt/passport/cinder
+EOF
+
 sudo openstack tripleo deploy \
     --templates \
     --local-ip={{ control_plane_ip }} \
@@ -11,6 +19,7 @@ sudo openstack tripleo deploy \
 {% for service in enabled_services %}
     -e {{ service }} \
 {% endfor %}
+    -e {{ stack_home }}/nfs.yaml \
     -r /usr/share/openstack-tripleo-heat-templates/roles/Standalone.yaml \
     -e {{ stack_home }}/containers-prepare-parameters.yaml \
     -e {{ stack_home }}/standalone_parameters.yaml \

@@ -13,6 +13,10 @@
     setup:
       gather_subset: min
 
+  - name: Reconnect VPN 
+    pause:
+      prompt: "Please reconnect VPN"
+
   - name: Install the tripleo client
     yum:
       name:
